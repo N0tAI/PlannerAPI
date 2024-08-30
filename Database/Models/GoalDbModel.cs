@@ -8,7 +8,7 @@ public class GoalDbModel
     public long GoalId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
-
+    
     public ICollection<TaskDbModel>? Tasks { get; set; }
     public ICollection<GoalDbModel>? Milestones { get; set; }
     public ICollection<CategoryDbModel>? Categories { get; set; }
