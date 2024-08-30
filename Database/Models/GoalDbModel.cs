@@ -11,5 +11,6 @@ public class GoalDbModel
     public string? Description { get; set; }
 
     public IEnumerable<GoalDbModel>? Milestones { get; set; }
+    public IEnumerable<TaskDbModel>? Tasks { get; set; }
     public IEnumerable<CategoryDbModel>? Categories { get; set; }
 }
