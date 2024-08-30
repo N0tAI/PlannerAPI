@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "Live Preview",
+			"workspacePath": "/home/notai/projects/hobby/software/web/task_planner/api/src",
+			"problemMatcher": [],
+			"label": "Live Preview: Run Server"
+		}
+	]
+}
