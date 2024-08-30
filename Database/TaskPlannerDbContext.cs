@@ -18,7 +18,13 @@ public class TaskPlannerDbContext : DbContext
     // Add DB Models here
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        base.OnConfiguring(optionsBuilder);
         optionsBuilder.UseSnakeCaseNamingConvention();
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        TaskDbModel.ConfigureModel(modelBuilder.Entity<TaskDbModel>());
+        CategoryDbModel.ConfigureModel(modelBuilder.Entity<CategoryDbModel>());
+        GoalDbModel.ConfigureModel(modelBuilder.Entity<GoalDbModel>());
     }
 }
