@@ -10,6 +10,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         // Add services to the container.
         builder.Services.AddDbContext<PlannerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+
+        builder.Services.AddTransient<CategoryRepository>()
+                        .AddTransient<GoalRepository>()
+                        .AddTransient<TaskRepository>();
+
         builder.Services.AddLogging();
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
