@@ -3,16 +3,16 @@ using TaskPlanner.API.Database.Models;
 
 namespace TaskPlanner.API.Database;
 
-public class TaskPlannerDbContext : DbContext
+public class PlannerDbContext : DbContext
 {
     public virtual DbSet<CategoryDbModel>? Categories { get; set; }
     public virtual DbSet<GoalDbModel>? Goals { get; set; }
     public virtual DbSet<TaskDbModel>? Tasks { get; set; }
-    public TaskPlannerDbContext() : base()
+    public PlannerDbContext() : base()
     {
     }
 
-    public TaskPlannerDbContext(DbContextOptions options) : base(options)
+    public PlannerDbContext(DbContextOptions options) : base(options)
     {
     }
     // Add DB Models here
