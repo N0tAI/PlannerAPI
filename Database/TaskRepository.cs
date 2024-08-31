@@ -3,11 +3,7 @@ using TaskPlanner.API.Database.Models;
 
 namespace TaskPlanner.API.Database;
 
-public class TaskRepository(PlannerDbContext dbContext)
+public class TaskRepository(PlannerDbContext dbContext) : DbSetBasicRepository<TaskDbModel>(dbContext, dbContext.Tasks!)
 {
     private PlannerDbContext _context = dbContext;
-
-    public virtual IEnumerable<TaskDbModel> GetAll()
-        => _context.Tasks!.AsEnumerable();
-
 }
