@@ -1,4 +1,5 @@
-using System;
+using Microsoft.EntityFrameworkCore;
+using TaskPlanner.API.Database.Models;
 
 namespace TaskPlanner.API.Database;
 

@@ -10,7 +10,7 @@ using TaskPlanner.API.Database;
 
 namespace TaskPlanner.API.Migrations
 {
-    [DbContext(typeof(TaskPlannerDbContext))]
+    [DbContext(typeof(PlannerDbContext))]
     partial class TaskPlannerDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

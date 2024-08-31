@@ -11,7 +11,7 @@ using TaskPlanner.API.Database;
 
 namespace TaskPlanner.API.Migrations
 {
-    [DbContext(typeof(TaskPlannerDbContext))]
+    [DbContext(typeof(PlannerDbContext))]
     [Migration("20240830200804_revised_initial")]
     partial class revised_initial
     {
