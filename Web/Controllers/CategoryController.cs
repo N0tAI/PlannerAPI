@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskPlanner.API.Database;
 using TaskPlanner.API.Database.Models;
