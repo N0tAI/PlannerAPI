@@ -1,13 +1,14 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TaskPlanner.API.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskController : ControllerBase
+    public class CategoryController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetAllAsync()
+        public async Task<ActionResult<ApiResponse>> GetAsync()
         {
             return StatusCode(StatusCodes.Status501NotImplemented, ApiResponse.Empty);
         }

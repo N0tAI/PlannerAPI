@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-namespace TaskPlanner.API.Web.API;
+namespace TaskPlanner.API.Web;
 
 public record class ApiResponse
 {
