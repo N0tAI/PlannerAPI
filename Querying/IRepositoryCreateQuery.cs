@@ -1,6 +1,6 @@
 using System;
 
-namespace TaskPlanner.API.Internal.Queries;
+namespace TaskPlanner.API.Querying;
 
 public interface IRepositoryCreateQuery<TWebView>
 {
