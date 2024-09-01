@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaskPlanner.API.Database;
+using TaskPlanner.API.Web.Serialization;
 
 namespace TaskPlanner.API;
 
@@ -21,6 +22,13 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.ConfigureHttpJsonOptions(
+            options => {
+                options.SerializerOptions.PropertyNameCaseInsensitive = true;
+                options.SerializerOptions.AllowTrailingCommas = true;
+                options.SerializerOptions.Converters.Add(new ApiResponseSerializer());
+            });
 
         var app = builder.Build();
 
