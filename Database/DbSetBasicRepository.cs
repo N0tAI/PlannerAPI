@@ -11,38 +11,45 @@ public abstract class DbSetBasicRepository<TModel>(DbContext context, DbSet<TMod
     private DbContext _context = context;
     private DbSet<TModel> _modelSet = modelSet;
 
-    public virtual IEnumerable<TModel> GetAll(params Expression<Func<TModel, bool>>[] filters)
+    protected IQueryable<T> ApplyFilter<T>(IQueryable<T> query, Expression<Func<T, bool>> filter)
+        => query.Where(filter);
+
+    public virtual IEnumerable<TModel> GetAll()
+        => _modelSet.AsEnumerable();
+    public IEnumerable<TModel> GetAll(params Expression<Func<TModel, bool>>[] filters)
+        => GetAll(filters.AsEnumerable());
+    public virtual IEnumerable<TModel> GetAll(IEnumerable<Expression<Func<TModel, bool>>> filters)
     {
-        var filterSize = filters.Count();
-        if(filterSize == 0)
-            return _modelSet.AsEnumerable();
+        IQueryable<TModel> query = _modelSet;
+
+        foreach(var filter in filters)
+            query = ApplyFilter(query, filter);
         
-        // Aggregate returns the initial value if the list has size 1
-        var filter = filters.Aggregate((e1, e2) => {
-            var combinedBody = Expression.AndAlso(e1.Body, e2.Body);
-            return Expression.Lambda<Func<TModel, bool>>(combinedBody, e1.Parameters);
-        });
-        
-        return _modelSet.Where(filter).AsEnumerable();
+        return query.AsEnumerable();
     }
     
-    public virtual TModel GetOne(params Expression<Func<TModel, bool>>[] filters)
+    public TModel GetOne(params Expression<Func<TModel, bool>>[] filters)
+        => GetOne(filters);
+    public virtual TModel GetOne(IEnumerable<Expression<Func<TModel, bool>>> filters)
         => TryGetOne(filters) ?? throw new ArgumentException("No model matching filters found");
-    public virtual TModel? TryGetOne(params Expression<Func<TModel, bool>>[] filters)
+    public TModel? TryGetOne(params Expression<Func<TModel, bool>>[] filters)
+        => TryGetOne(filters);
+    public virtual TModel? TryGetOne(IEnumerable<Expression<Func<TModel, bool>>> filters)
     {
-        var filterSize = filters.Count();
-        if(filterSize == 0)
-            return _modelSet.FirstOrDefault();
+        if(filters.Count() == 0)
+            throw new ArgumentException("Must provide a filter when retrieving a model");
         
-        // Aggregate returns the initial value if the list has size 1
-        var filter = filters.Aggregate((e1, e2) => {
-            var combinedBody = Expression.AndAlso(e1.Body, e2.Body);
-            return Expression.Lambda<Func<TModel, bool>>(combinedBody, e1.Parameters);
-        });
+        IQueryable<TModel> query = _modelSet;
+
+        foreach(var filter in filters)
+            query = ApplyFilter(query, filter);
         
-        return _modelSet.FirstOrDefault(filter);
+        return query.FirstOrDefault();
     }
+
     public bool TryGetOne(out TModel? model, params Expression<Func<TModel, bool>>[] filters)
+        => TryGetOne(out model, filters);
+    public bool TryGetOne(out TModel? model, IEnumerable<Expression<Func<TModel, bool>>> filters)
     {
         model = TryGetOne(filters);
         if(model is null)
