@@ -4,6 +4,6 @@ namespace TaskPlanner.API.Web;
 
 public record class MilestonesWebView : GoalWebView
 {
-    public required ulong GoalId { get; init; }
+    public required long GoalId { get; init; }
 
 }
