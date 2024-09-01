@@ -1,4 +1,4 @@
-namespace TaskPlanner.API.Web;
+namespace TaskPlanner.API.Controllers;
 
 public record class ApiValueResponse<TValue> : ApiResponse
 {

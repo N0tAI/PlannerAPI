@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskPlanner.API.Database;
 using TaskPlanner.API.Database.Models;
+using TaskPlanner.API.Web;
 
-namespace TaskPlanner.API.Web.Controllers
+namespace TaskPlanner.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

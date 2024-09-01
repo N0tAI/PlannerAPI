@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Web.Serialization;
+using TaskPlanner.API.Internal.Serialization;
 
 namespace TaskPlanner.API;
 
