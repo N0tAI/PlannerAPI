@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskPlanner.API.Database;
 using TaskPlanner.API.Querying.Categories;
-using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Controllers
 {
