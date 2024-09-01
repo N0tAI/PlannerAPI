@@ -4,7 +4,7 @@ using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Internal.TypeMapping;
 
-public class CategoryMapper : IModelViewMapper<CategoryDbModel, CategoryWebView>
+public class CategoryViewMapper : IModelViewMapper<CategoryDbModel, CategoryWebView>
 {
     public CategoryWebView Map(CategoryDbModel model)
     {

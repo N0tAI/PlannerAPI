@@ -33,7 +33,7 @@ public class CategoryReadQuery : IRepositoryReadQuery<CategoryWebView>
 
     public IEnumerable<CategoryWebView> Execute()
     {
-        var mapper = new CategoryMapper();
+        var mapper = new CategoryViewMapper();
         var repo = new CategoryRepository(_context);
 
         //if(_retrivalMax > 0)

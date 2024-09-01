@@ -14,7 +14,7 @@ public class CategoryCreateQuery : IRepositoryCreateQuery<CategoryCreationReques
     }
     public int Execute(IEnumerable<CategoryCreationRequest> requests)
     {
-        var mapper = new CategoryCreationMapper();
+        var mapper = new CategoryCreateMapper();
         var repo = new CategoryRepository(_context);
 
         int numCreated = 0;

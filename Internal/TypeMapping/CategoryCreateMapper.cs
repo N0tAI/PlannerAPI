@@ -3,7 +3,7 @@ using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Internal.TypeMapping;
 
-public class CategoryCreationMapper : IModelViewMapper<CategoryDbModel, CategoryCreationRequest>
+public class CategoryCreateMapper : IModelViewMapper<CategoryDbModel, CategoryCreationRequest>
 {
     public CategoryCreationRequest Map(CategoryDbModel model)
         => throw new NotImplementedException();
