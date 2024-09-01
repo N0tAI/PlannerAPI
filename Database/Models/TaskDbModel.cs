@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace TaskPlanner.API.Database.Models;
 
-public class TaskDbModel
+public class TaskDbModel : IDbModel
 {
     public required long TaskId { get; set; }
     public required string? Name { get; set; }

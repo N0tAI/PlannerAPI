@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-
 namespace TaskPlanner.API.Database.Models;
 
-public class CategoryDbModel
+public record class CategoryDbModel : IDbModel
 {
     public required long CategoryId { get; set; }
     public required string? Name { get; set; }

@@ -1,6 +1,6 @@
 namespace TaskPlanner.API.Database.Models;
 
-public class TaskToSubTaskJoinDbModel
+public class TaskToSubTaskJoinDbModel : IDbModel
 {
         public TaskDbModel ParentTask { get; set; }
  

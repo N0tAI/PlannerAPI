@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace TaskPlanner.API.Database.Models;
 
-public class GoalDbModel
+public record class GoalDbModel : IDbModel
 {
     public required long GoalId { get; set; }
     public required string? Name { get; set; }

@@ -1,6 +1,6 @@
 namespace TaskPlanner.API.Database.Models;
 
-public class GoalToMilestoneJoinDbModel
+public record class GoalToMilestoneJoinDbModel : IDbModel
 {
         public GoalDbModel ParentGoal { get; set; }
  
