@@ -6,9 +6,9 @@ namespace TaskPlanner.API.Database.Models;
 
 public class TaskDbModel
 {
-    public long TaskId { get; set; }
-    public string? Name { get; set; }
-    public int? Priority { get; set; }
+    public required long TaskId { get; set; }
+    public required string? Name { get; set; }
+    public int? Priority { get; set; } = 0;
     public long? GoalId { get; set; }
     public GoalDbModel? Goal { get; set; }
     public ICollection<TaskDbModel>? SubTasks { get; set; }

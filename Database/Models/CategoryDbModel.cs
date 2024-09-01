@@ -6,8 +6,8 @@ namespace TaskPlanner.API.Database.Models;
 
 public class CategoryDbModel
 {
-    public long CategoryId { get; set; }
-    public string? Name { get; set; }
+    public required long CategoryId { get; set; }
+    public required string? Name { get; set; }
 
     internal static void ConfigureModel(EntityTypeBuilder<CategoryDbModel> builder)
     {

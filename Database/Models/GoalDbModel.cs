@@ -5,8 +5,8 @@ namespace TaskPlanner.API.Database.Models;
 
 public class GoalDbModel
 {
-    public long GoalId { get; set; }
-    public string? Name { get; set; }
+    public required long GoalId { get; set; }
+    public required string? Name { get; set; }
     public string? Description { get; set; }
     
     public ICollection<TaskDbModel>? Tasks { get; set; }
