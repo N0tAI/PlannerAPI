@@ -14,17 +14,25 @@ public abstract class DbSetBasicRepository<TModel>(DbContext context, DbSet<TMod
     protected IQueryable<T> ApplyFilter<T>(IQueryable<T> query, Expression<Func<T, bool>> filter)
         => query.Where(filter);
 
-    public virtual IEnumerable<TModel> GetAll()
-        => _modelSet.AsEnumerable();
-    public IEnumerable<TModel> GetAll(params Expression<Func<TModel, bool>>[] filters)
-        => GetAll(filters.AsEnumerable());
-    public virtual IEnumerable<TModel> GetAll(IEnumerable<Expression<Func<TModel, bool>>> filters)
+    public virtual IEnumerable<TModel> GetAll(bool lazyLoad = true)
+    {
+        IQueryable<TModel> query = _modelSet;
+        if(!lazyLoad)
+            return query.ToList();
+        return query.AsEnumerable();
+    }
+    public IEnumerable<TModel> GetAll(bool lazyLoad = true, params Expression<Func<TModel, bool>>[] filters)
+        => GetAll(filters.AsEnumerable(), lazyLoad);
+    public virtual IEnumerable<TModel> GetAll(IEnumerable<Expression<Func<TModel, bool>>> filters, bool lazyLoad = true)
     {
         IQueryable<TModel> query = _modelSet;
 
         foreach(var filter in filters)
             query = ApplyFilter(query, filter);
         
+        if(!lazyLoad)
+            return query.ToList();
+
         return query.AsEnumerable();
     }
     
