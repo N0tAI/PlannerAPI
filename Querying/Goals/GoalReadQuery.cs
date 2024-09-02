@@ -6,7 +6,7 @@ using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Goals;
 
-public class GoalReadQuery
+public class GoalReadQuery : IRepositoryReadQuery<GoalWebView>
 {
     private PlannerDbContext _context;
     private readonly int _retrivalMax;

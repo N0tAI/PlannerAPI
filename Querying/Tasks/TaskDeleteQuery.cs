@@ -2,7 +2,7 @@ using TaskPlanner.API.Database;
 
 namespace TaskPlanner.API.Querying.Tasks;
 
-public class TaskDeleteQuery
+public class TaskDeleteQuery : IRepositoryDeleteQuery<TaskDeleteRequest>
 {
     private PlannerDbContext _context;
     public TaskDeleteQuery(PlannerDbContext context)
