@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Database.Models;
-using TaskPlanner.API.Web;
+using TaskPlanner.API.Querying.Tasks;
 
 namespace TaskPlanner.API.Controllers
 {
@@ -9,19 +8,19 @@ namespace TaskPlanner.API.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        private TaskRepository _taskRepo;
+        private PlannerDbContext _context;
 
-        public TasksController(TaskRepository repo) 
+        public TasksController(PlannerDbContext context) 
         {
-            _taskRepo = repo;
+            _context = context;
         }
         
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetAllAsync()
         {
-            var tasks = await Task.Run(() => _taskRepo.GetAll());
+            var tasks = await Task.Run(new TaskReadQuery(_context).Execute);
             var numTasks = tasks.Count();
-            var message = $"Found {numTasks} goals";
+            var message = $"Found {numTasks} tasks";
             if(numTasks == 0)
                 return StatusCode(StatusCodes.Status204NoContent, ApiResponse.WithMessage(message));
             return StatusCode(StatusCodes.Status200OK, ApiResponse.Create(tasks, message));
@@ -29,27 +28,32 @@ namespace TaskPlanner.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse>> GetAsync(long id)
         {
-            var task = await Task.Run(() => _taskRepo.TryGetOne(t => t.TaskId == id));
-            if(task is null)
+            var tasks = await Task.Run(new TaskReadQuery(_context, [t => t.TaskId == id], 1).Execute);
+            if(tasks.Count() < 1)
                 return StatusCode(StatusCodes.Status404NotFound, ApiResponse.WithMessage($"Could not find a task of id {id}"));
-            return StatusCode(StatusCodes.Status200OK, ApiResponse.Create(task, $"Found goal: {task.Name}"));
+            
+            var task = tasks.First();
+            return StatusCode(StatusCodes.Status200OK, ApiResponse.Create(task, $"Found task: {task.Name}"));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> PostAsync([FromBody] TaskCreationRequest taskRequest)
+        public async Task<ActionResult<ApiResponse>> PostAsync([FromBody] TaskCreateRequest createRequest)
         {
-            if(await Task.Run(() => _taskRepo.TryCreate(new TaskDbModel { TaskId = 0, Name = taskRequest.Name, Priority = taskRequest.Priority })))
+            if(await Task.Run(() => new TaskCreateQuery(_context).Execute([ createRequest ])) == 1)
                 return StatusCode(StatusCodes.Status201Created);
-            return StatusCode(StatusCodes.Status500InternalServerError, ApiResponse.Create(taskRequest, "Could not add the model to the API"));
+            return StatusCode(StatusCodes.Status500InternalServerError, ApiResponse.Create(createRequest, "Could not add the model to the API"));
         }
 
+        [HttpDelete("{id}")]
+        public Task<ActionResult> DeleteAsync(long id)
+            => DeleteAsync(new TaskDeleteRequest{ Id = id });
+
         [HttpDelete]
-        public async Task<ActionResult> DeleteAsync([FromQuery] long id)
+        public async Task<ActionResult> DeleteAsync([FromBody] TaskDeleteRequest request)
         {
-            var task = await Task.Run(() => _taskRepo.TryGetOne(t => t.TaskId == id));
-            if(task is null)
+            var numDeleted = await Task.Run(() => new TaskDeleteQuery(_context).Execute([ request ]));
+            if(numDeleted == 0)
                 return StatusCode(StatusCodes.Status404NotFound);
-            await Task.Run(() => _taskRepo.Delete(task));
             return StatusCode(StatusCodes.Status204NoContent);
         }
     }

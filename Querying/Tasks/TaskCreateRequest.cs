@@ -1,6 +1,6 @@
-namespace TaskPlanner.API.Web;
+namespace TaskPlanner.API.Querying.Tasks;
 
-public record class TaskCreationRequest : IWebModel
+public record class TaskCreateRequest
 {
     public required string Name { get; init; }
     public int? Priority { get; init; }
