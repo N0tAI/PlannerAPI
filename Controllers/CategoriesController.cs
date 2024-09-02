@@ -38,7 +38,7 @@ namespace TaskPlanner.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostAsync([FromBody] CategoryCreationRequest categoryRequest)
+        public async Task<ActionResult> PostAsync([FromBody] CategoryCreateRequest categoryRequest)
         {
             if(await Task.Run(() => new CategoryCreateQuery(_context).Execute([ categoryRequest ])) == 1)
                 return StatusCode(StatusCodes.Status201Created);
