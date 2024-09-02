@@ -5,37 +5,34 @@ using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Goals;
 
-public class GoalReadQuery : IRepositoryReadQuery<GoalWebView>
+public class GoalReadQuery : IRepositoryReadQuery<GoalWebView, GoalFilterParam>
 {
     private PlannerDbContext _context;
     private readonly int _retrivalMax;
-    private IEnumerable<Expression<Func<GoalDbModel, bool>>> _filters;
 
     public GoalReadQuery(PlannerDbContext context) : this(context, -1)
     {
     }
-    public GoalReadQuery(PlannerDbContext context, int max) : this(
-        context,
-        Enumerable.Empty<Expression<Func<GoalDbModel, bool>>>(),
-        max
-    )
-    {
-    }
-    public GoalReadQuery(PlannerDbContext context,
-                             IEnumerable<Expression<Func<GoalDbModel, bool>>> filters,
-                             int max)
+    public GoalReadQuery(PlannerDbContext context, int max)
     {
         _context = context;
-        _filters = filters;
         _retrivalMax = max;
     }
 
-    public IEnumerable<GoalWebView> Execute()
+    public IEnumerable<GoalWebView> Execute(IEnumerable<GoalFilterParam> filters)
     {
         GoalRepository repo = new(_context);
         GoalViewMapper mapper = new();
 
-        //if(_retrivalMax > 0)
-        return repo.GetAll(_filters).Select(mapper.Map);
+        var filterExpressions = filters.SelectMany(f => {
+            List<Expression<Func<GoalDbModel, bool>>> expressions = new();
+            if(f.Id is not null)
+                expressions.Add(m => m.GoalId == f.Id);
+            if(f.Name is not null)
+                expressions.Add(m => m.Name == f.Name);
+            return expressions.AsEnumerable();
+        });
+        
+        return repo.GetAll(filterExpressions).Select(mapper.Map);
     }
 }

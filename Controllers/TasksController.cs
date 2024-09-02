@@ -18,7 +18,7 @@ namespace TaskPlanner.API.Controllers
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetAllAsync()
         {
-            var tasks = await Task.Run(new TaskReadQuery(_context).Execute);
+            var tasks = await Task.Run(() => new TaskReadQuery(_context).Execute(Enumerable.Empty<TaskFilterParam>()));
             var numTasks = tasks.Count();
             var message = $"Found {numTasks} tasks";
             if(numTasks == 0)
@@ -28,7 +28,7 @@ namespace TaskPlanner.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse>> GetAsync(long id)
         {
-            var tasks = await Task.Run(new TaskReadQuery(_context, [t => t.TaskId == id], 1).Execute);
+            var tasks = await Task.Run(() => new TaskReadQuery(_context, 1).Execute([ new TaskFilterParam { Id = id } ]));
             if(tasks.Count() < 1)
                 return StatusCode(StatusCodes.Status404NotFound, ApiResponse.WithMessage($"Could not find a task of id {id}"));
             
@@ -46,12 +46,12 @@ namespace TaskPlanner.API.Controllers
 
         [HttpDelete("{id}")]
         public Task<ActionResult> DeleteAsync(long id)
-            => DeleteAsync(new TaskDeleteRequest{ Id = id });
+            => DeleteAsync(new TaskFilterParam{ Id = id });
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteAsync([FromBody] TaskDeleteRequest request)
+        public async Task<ActionResult> DeleteAsync([FromBody] TaskFilterParam filter)
         {
-            var numDeleted = await Task.Run(() => new TaskDeleteQuery(_context).Execute([ request ]));
+            var numDeleted = await Task.Run(() => new TaskDeleteQuery(_context).Execute([ filter ]));
             if(numDeleted == 0)
                 return StatusCode(StatusCodes.Status404NotFound);
             return StatusCode(StatusCodes.Status204NoContent);

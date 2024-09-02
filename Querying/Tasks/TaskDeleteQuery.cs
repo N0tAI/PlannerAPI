@@ -1,36 +1,32 @@
+using System.Linq.Expressions;
 using TaskPlanner.API.Database;
+using TaskPlanner.API.Database.Models;
 
 namespace TaskPlanner.API.Querying.Tasks;
 
-public class TaskDeleteQuery : IRepositoryDeleteQuery<TaskDeleteRequest>
+public class TaskDeleteQuery : IRepositoryDeleteQuery<TaskFilterParam>
 {
     private PlannerDbContext _context;
     public TaskDeleteQuery(PlannerDbContext context)
     {
         _context = context;
     }
-    public int Execute(IEnumerable<TaskDeleteRequest> requests)
+    public int Execute(IEnumerable<TaskFilterParam> filters)
     {
         TaskRepository repo = new(_context);
 
-        int numDeleted = 0;
-        foreach(var request in requests)
-        {
-            // Todo merge all queries against non null values into one
-            // (will likely benefit perf)
-            if(request.Id is not null)
-            {
-                var items = repo.GetAll(false, m => m.TaskId == request.Id);
-                foreach(var item in items)
-                    numDeleted += repo.Delete(item);
-            }
-            if(request.Name is not null)
-            {
-                var items = repo.GetAll(false, m => m.Name == request.Name);
-                foreach(var item in items)
-                    numDeleted += repo.Delete(item);
-            }
-        }
+        var filterExpressions = filters.SelectMany(f => {
+            List<Expression<Func<TaskDbModel, bool>>> expressions = new();
+            if(f.Id is not null)
+                expressions.Add(m => m.TaskId == f.Id);
+            if(f.Name is not null)
+                expressions.Add(m => m.Name == f.Name);
+            return expressions.AsEnumerable();
+        });
+        
+        var entities = repo.GetAll(filterExpressions, false);
+
+        int numDeleted = repo.Delete(entities);
 
         return numDeleted;
     }

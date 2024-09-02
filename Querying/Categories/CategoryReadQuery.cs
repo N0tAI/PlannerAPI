@@ -5,38 +5,35 @@ using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Categories;
 
-public class CategoryReadQuery : IRepositoryReadQuery<CategoryWebView>
+public class CategoryReadQuery : IRepositoryReadQuery<CategoryWebView, CategoryFilterParam>
 {
     private PlannerDbContext _context;
     private readonly int _retrivalMax;
-    private IEnumerable<Expression<Func<CategoryDbModel, bool>>> _filters;
 
     public CategoryReadQuery(PlannerDbContext context) : this(context, -1)
     {
     }
-    public CategoryReadQuery(PlannerDbContext context, int max) : this(
-        context,
-        Enumerable.Empty<Expression<Func<CategoryDbModel, bool>>>(),
-        max
-    )
-    {
-    }
-    public CategoryReadQuery(PlannerDbContext context,
-                             IEnumerable<Expression<Func<CategoryDbModel, bool>>> filters,
-                             int max)
+    public CategoryReadQuery(PlannerDbContext context, int max)
     {
         _context = context;
-        _filters = filters;
         _retrivalMax = max;
     }
 
-    public IEnumerable<CategoryWebView> Execute()
+    public IEnumerable<CategoryWebView> Execute(IEnumerable<CategoryFilterParam> filters)
     {
         CategoryRepository repo = new(_context);
         CategoryViewMapper mapper = new();
 
-        //if(_retrivalMax > 0)
-        return repo.GetAll(_filters).Select(mapper.Map);
+        var filterExpressions = filters.SelectMany(f => {
+            List<Expression<Func<CategoryDbModel, bool>>> expressions = new();
+            if(f.Id is not null)
+                expressions.Add(m => m.CategoryId == f.Id);
+            if(f.Name is not null)
+                expressions.Add(m => m.Name == f.Name);
+            return expressions.AsEnumerable();
+        });
+        
+        return repo.GetAll(filterExpressions).Select(mapper.Map);
     }
     /*var filterSize = filters.Count();
         if(filterSize == 0)

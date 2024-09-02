@@ -1,43 +1,33 @@
-using System;
+using System.Linq.Expressions;
 using TaskPlanner.API.Database;
+using TaskPlanner.API.Database.Models;
 
 namespace TaskPlanner.API.Querying.Goals;
 
-public class GoalDeleteQuery : IRepositoryDeleteQuery<GoalDeleteRequest>
+public class GoalDeleteQuery : IRepositoryDeleteQuery<GoalFilterParam>
 {
     private PlannerDbContext _context;
     public GoalDeleteQuery(PlannerDbContext context)
     {
         _context = context;
     }
-    public int Execute(IEnumerable<GoalDeleteRequest> requests)
+    public int Execute(IEnumerable<GoalFilterParam> filters)
     {
         GoalRepository repo = new(_context);
 
-        int numDeleted = 0;
-        foreach(var request in requests)
-        {
-            // Todo merge all queries against non null values into one
-            // (will likely benefit perf)
-            if(request.Id is not null)
-            {
-                var items = repo.GetAll(false, m => m.GoalId == request.Id);
-                foreach(var item in items)
-                    numDeleted += repo.Delete(item);
-            }
-            if(request.Name is not null)
-            {
-                var items = repo.GetAll(false, m => m.Name == request.Name);
-                foreach(var item in items)
-                    numDeleted += repo.Delete(item);
-            }
-            if(request.Description is not null)
-            {
-                var items = repo.GetAll(false, m => m.Description == request.Name);
-                foreach(var item in items)
-                    numDeleted += repo.Delete(item);
-            }
-        }
+        var filterExpressions = filters.SelectMany(f => {
+            List<Expression<Func<GoalDbModel, bool>>> expressions = new();
+            if(f.Id is not null)
+                expressions.Add(m => m.GoalId == f.Id);
+            if(f.Name is not null)
+                expressions.Add(m => m.Name == f.Name);
+            
+            return expressions.AsEnumerable();
+        });
+        
+        var items = repo.GetAll(filterExpressions, false);
+        
+        int numDeleted = repo.Delete(items);
 
         return numDeleted;
     }
