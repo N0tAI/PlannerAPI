@@ -46,13 +46,8 @@ namespace TaskPlanner.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync(long id)
-        {
-            var numDeleted = await Task.Run(() => new CategoryDeleteQuery(_context).Execute([ new CategoryDeleteRequest{ Id = id } ]));
-            if(numDeleted == 0)
-                return StatusCode(StatusCodes.Status404NotFound);
-            return StatusCode(StatusCodes.Status204NoContent);
-        }
+        public Task<ActionResult> DeleteAsync(long id)
+            => DeleteAsync(new CategoryDeleteRequest{ Id = id });
 
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync([FromBody] CategoryDeleteRequest request)
