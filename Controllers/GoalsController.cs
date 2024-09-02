@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Database.Models;
-using TaskPlanner.API.Web;
+using TaskPlanner.API.Querying.Goals;
 
 namespace TaskPlanner.API.Controllers
 {
@@ -9,47 +8,53 @@ namespace TaskPlanner.API.Controllers
     [ApiController]
     public class GoalsController : ControllerBase
     {
-        private GoalRepository _goalRepo;
+        private PlannerDbContext _context;
 
-        public GoalsController(GoalRepository repo) 
+        public GoalsController(PlannerDbContext context) 
         {
-            _goalRepo = repo;
+            _context = context;
         }
         
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetAllAsync()
         {
-            var goals = await Task.Run(() => _goalRepo.GetAll());
+            var goals = await Task.Run(new GoalReadQuery(_context).Execute);
             var numGoals = goals.Count();
             var message = $"Found {numGoals} goals";
             if(numGoals == 0)
                 return StatusCode(StatusCodes.Status204NoContent, ApiResponse.WithMessage(message));
+
             return StatusCode(StatusCodes.Status200OK, ApiResponse.Create(goals, message));
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse>> GetAsync(long id)
         {
-            var goal = await Task.Run(() => _goalRepo.TryGetOne(g => g.GoalId == id));
-            if(goal is null)
+            var goals = await Task.Run(new GoalReadQuery(_context, [g => g.GoalId == id], 1).Execute);
+            if(goals.Count() < 1)
                 return StatusCode(StatusCodes.Status404NotFound, ApiResponse.WithMessage($"Could not find a goal of id {id}"));
-            return StatusCode(StatusCodes.Status200OK, ApiResponse.Create(goal, $"Found goal: ${goal.Name}"));
+
+            var goal = goals.First();
+            return StatusCode(StatusCodes.Status200OK, ApiResponse.Create(goal, $"Found goal: {goal.Name}"));
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostAsync([FromBody] GoalCreationRequest goalRequest)
+        public async Task<ActionResult> PostAsync([FromBody] GoalCreateRequest request)
         {
-            if(await Task.Run(() => _goalRepo.TryCreate(new GoalDbModel { GoalId = 0, Name = goalRequest.Name, Description = goalRequest.Description })))
+            if(await Task.Run(() => new GoalCreateQuery(_context).Execute([ request ])) == 1)
                 return StatusCode(StatusCodes.Status201Created);
-            return StatusCode(StatusCodes.Status500InternalServerError, ApiResponse.Create(goalRequest, "Could not add the model to the API"));
+            return StatusCode(StatusCodes.Status500InternalServerError, ApiResponse.Create(request, "Could not add the model to the API"));
         }
 
+        [HttpDelete("{id}")]
+        public Task<ActionResult> DeleteAsync(long id)
+            => DeleteAsync(new GoalDeleteRequest{ Id = id });
+
         [HttpDelete]
-        public async Task<ActionResult> DeleteAsync([FromQuery] long id)
+        public async Task<ActionResult> DeleteAsync([FromBody] GoalDeleteRequest request)
         {
-            var goal = await Task.Run(() => _goalRepo.TryGetOne(g => g.GoalId == id));
-            if(goal is null)
+            var numDeleted = await Task.Run(() => new GoalDeleteQuery(_context).Execute([ request ]));
+            if(numDeleted == 0)
                 return StatusCode(StatusCodes.Status404NotFound);
-            await Task.Run(() => _goalRepo.Delete(goal));
             return StatusCode(StatusCodes.Status204NoContent);
         }
     }
