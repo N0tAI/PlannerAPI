@@ -70,10 +70,15 @@ public abstract class DbSetBasicRepository<TModel>(DbContext context, DbSet<TMod
         _modelSet.Add(model);
         return _context.SaveChanges();
     }
-    public virtual bool TryCreate(TModel model)
+    public virtual int Create(params TModel[] models)
     {
-        var numAdded = Create(model);
-        return numAdded > 0;
+        _modelSet.AddRange(models);
+        return _context.SaveChanges();
+    }
+    public virtual int Create(IEnumerable<TModel> models)
+    {
+        _modelSet.AddRange(models);
+        return _context.SaveChanges();
     }
 
     public virtual int Update(TModel model)
@@ -81,10 +86,15 @@ public abstract class DbSetBasicRepository<TModel>(DbContext context, DbSet<TMod
         _modelSet.Update(model);
         return _context.SaveChanges();
     }
-    public virtual bool TryUpdate(TModel model)
+    public virtual int Update(params TModel[] models)
     {
-        var numUpdated = Update(model);
-        return numUpdated > 0;
+        _modelSet.UpdateRange(models);
+        return _context.SaveChanges();
+    }
+    public virtual int Update(IEnumerable<TModel> models)
+    {
+        _modelSet.UpdateRange(models);
+        return _context.SaveChanges();
     }
 
     public virtual int Delete(TModel model)
@@ -92,9 +102,14 @@ public abstract class DbSetBasicRepository<TModel>(DbContext context, DbSet<TMod
         _context.Remove(model);
         return _context.SaveChanges();
     }
-    public virtual bool TryDelete(TModel model)
+    public virtual int Delete(params TModel[] models)
     {
-        var numRemoved = Delete(model);
-        return numRemoved > 0;
+        _modelSet.RemoveRange(models);
+        return _context.SaveChanges();
+    }
+    public virtual int Delete(IEnumerable<TModel> models)
+    {
+        _modelSet.RemoveRange(models);
+        return _context.SaveChanges();
     }
 }
