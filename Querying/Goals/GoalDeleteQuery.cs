@@ -12,7 +12,7 @@ public class GoalDeleteQuery : IRepositoryDeleteQuery<GoalDeleteRequest>
     }
     public int Execute(IEnumerable<GoalDeleteRequest> requests)
     {
-        var repo = new GoalRepository(_context);
+        GoalRepository repo = new(_context);
 
         int numDeleted = 0;
         foreach(var request in requests)

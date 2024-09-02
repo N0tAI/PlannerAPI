@@ -13,11 +13,12 @@ public class TaskCreateQuery : IRepositoryCreateQuery<TaskCreateRequest>
 
     public int Execute(IEnumerable<TaskCreateRequest> requests)
     {
-        var repo = new TaskRepository(_context);
+        TaskRepository repo = new(_context);
+        TaskModelMapper mapper = new(); 
 
         int numCreated = 0;
         foreach(var request in requests)
-            numCreated += repo.Create(new TaskDbModel { TaskId = default, Name = request.Name, Priority = request.Priority });
+            numCreated += repo.Create(mapper.Map(request));
 
         return numCreated;
     }

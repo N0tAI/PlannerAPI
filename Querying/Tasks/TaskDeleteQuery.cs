@@ -11,7 +11,7 @@ public class TaskDeleteQuery : IRepositoryDeleteQuery<TaskDeleteRequest>
     }
     public int Execute(IEnumerable<TaskDeleteRequest> requests)
     {
-        var repo = new TaskRepository(_context);
+        TaskRepository repo = new(_context);
 
         int numDeleted = 0;
         foreach(var request in requests)

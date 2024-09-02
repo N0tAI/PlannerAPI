@@ -1,6 +1,4 @@
-using System;
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Categories;
 
@@ -13,7 +11,7 @@ public class CategoryDeleteQuery : IRepositoryDeleteQuery<CategoryDeleteRequest>
     }
     public int Execute(IEnumerable<CategoryDeleteRequest> requests)
     {
-        var repo = new CategoryRepository(_context);
+        CategoryRepository repo = new(_context);
 
         int numDeleted = 0;
         foreach(var request in requests)

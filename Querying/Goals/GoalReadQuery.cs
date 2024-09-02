@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using TaskPlanner.API.Database;
 using TaskPlanner.API.Database.Models;
-using TaskPlanner.API.Internal.TypeMapping;
 using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Goals;
@@ -33,8 +32,8 @@ public class GoalReadQuery : IRepositoryReadQuery<GoalWebView>
 
     public IEnumerable<GoalWebView> Execute()
     {
-        var mapper = new GoalViewMapper();
-        var repo = new GoalRepository(_context);
+        GoalRepository repo = new(_context);
+        GoalViewMapper mapper = new();
 
         //if(_retrivalMax > 0)
         return repo.GetAll(_filters).Select(mapper.Map);

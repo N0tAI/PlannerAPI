@@ -1,5 +1,4 @@
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Database.Models;
 
 namespace TaskPlanner.API.Querying.Categories;
 
@@ -12,11 +11,12 @@ public class CategoryCreateQuery : IRepositoryCreateQuery<CategoryCreateRequest>
     }
     public int Execute(IEnumerable<CategoryCreateRequest> requests)
     {
-        var repo = new CategoryRepository(_context);
+        CategoryRepository repo = new(_context);
+        CategoryModelMapper mapper = new();
 
         int numCreated = 0;
         foreach(var request in requests)
-            numCreated += repo.Create(new CategoryDbModel { CategoryId = default, Name = request.Name });
+            numCreated += repo.Create(mapper.Map(request));
 
         return numCreated;
     }

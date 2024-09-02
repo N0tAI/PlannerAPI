@@ -1,6 +1,4 @@
-using System;
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Database.Models;
 
 namespace TaskPlanner.API.Querying.Goals;
 
@@ -14,11 +12,12 @@ public class GoalCreateQuery : IRepositoryCreateQuery<GoalCreateRequest>
 
     public int Execute(IEnumerable<GoalCreateRequest> requests)
     {
-        var repo = new GoalRepository(_context);
+        GoalRepository repo = new(_context);
+        GoalModelMapper mapper = new();
 
         int numCreated = 0;
         foreach(var request in requests)
-            numCreated += repo.Create(new GoalDbModel { GoalId = default, Name = request.Name, Description = request.Description });
+            numCreated += repo.Create(mapper.Map(request));
 
         return numCreated;
     }

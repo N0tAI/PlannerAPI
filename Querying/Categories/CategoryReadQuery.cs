@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using TaskPlanner.API.Database;
 using TaskPlanner.API.Database.Models;
-using TaskPlanner.API.Internal.TypeMapping;
 using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Categories;
@@ -33,8 +32,8 @@ public class CategoryReadQuery : IRepositoryReadQuery<CategoryWebView>
 
     public IEnumerable<CategoryWebView> Execute()
     {
-        var mapper = new CategoryViewMapper();
-        var repo = new CategoryRepository(_context);
+        CategoryRepository repo = new(_context);
+        CategoryViewMapper mapper = new();
 
         //if(_retrivalMax > 0)
         return repo.GetAll(_filters).Select(mapper.Map);
