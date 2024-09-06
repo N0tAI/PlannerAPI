@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Database.Models;
+using TaskPlanner.API.Database.Entities;
 
 namespace TaskPlanner.API.Querying.Tasks;
 
@@ -16,9 +16,9 @@ public class TaskDeleteQuery : IRepositoryDeleteQuery<TaskFilterParam>
         TaskRepository repo = new(_context);
 
         var filterExpressions = filters.SelectMany(f => {
-            List<Expression<Func<TaskDbModel, bool>>> expressions = new();
+            List<Expression<Func<TaskEntity, bool>>> expressions = new();
             if(f.Id is not null)
-                expressions.Add(m => m.TaskId == f.Id);
+                expressions.Add(m => m.Id == f.Id);
             if(f.Name is not null)
                 expressions.Add(m => m.Name == f.Name);
             return expressions.AsEnumerable();

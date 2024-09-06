@@ -1,9 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using TaskPlanner.API.Database.Models;
+using TaskPlanner.API.Database.Entities;
 
 namespace TaskPlanner.API.Database;
 
-public class GoalRepository(PlannerDbContext dbContext) : DbSetBasicRepository<GoalDbModel>(dbContext, dbContext.Goals!)
+public class GoalRepository(PlannerDbContext dbContext) : DbSetBasicRepository<GoalEntity>(dbContext, dbContext.Goals!)
 {
     private PlannerDbContext _context = dbContext;
 }

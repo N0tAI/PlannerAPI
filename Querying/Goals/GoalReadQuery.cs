@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using TaskPlanner.API.Database;
-using TaskPlanner.API.Database.Models;
+using TaskPlanner.API.Database.Entities;
 using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Goals;
@@ -25,9 +25,9 @@ public class GoalReadQuery : IRepositoryReadQuery<GoalWebView, GoalFilterParam>
         GoalViewMapper mapper = new();
 
         var filterExpressions = filters.SelectMany(f => {
-            List<Expression<Func<GoalDbModel, bool>>> expressions = new();
+            List<Expression<Func<GoalEntity, bool>>> expressions = new();
             if(f.Id is not null)
-                expressions.Add(m => m.GoalId == f.Id);
+                expressions.Add(m => m.Id == f.Id);
             if(f.Name is not null)
                 expressions.Add(m => m.Name == f.Name);
             return expressions.AsEnumerable();

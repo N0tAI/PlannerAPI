@@ -1,12 +1,12 @@
-using TaskPlanner.API.Database.Models;
+using TaskPlanner.API.Database.Entities;
 using TaskPlanner.API.Web;
 
 namespace TaskPlanner.API.Querying.Categories;
 
-public class CategoryViewMapper : ITypeMapper<CategoryWebView, CategoryDbModel>
+public class CategoryViewMapper : ITypeMapper<CategoryWebView, CategoryEntity>
 {
-    public CategoryWebView Map(CategoryDbModel model)
+    public CategoryWebView Map(CategoryEntity input)
     {
-        return new CategoryWebView { Id = model.CategoryId, Name = model.Name };
+        return new CategoryWebView { Id = input.Id, Name = input.Name };
     }
 }

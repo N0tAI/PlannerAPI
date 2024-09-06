@@ -1,12 +1,10 @@
-using System;
 using System.Linq.Expressions;
-using Castle.Components.DictionaryAdapter;
 using Microsoft.EntityFrameworkCore;
 
 namespace TaskPlanner.API.Database;
 
 public abstract class DbSetBasicRepository<TModel>(DbContext context, DbSet<TModel> modelSet)
-    where TModel : class
+    where TModel : class, IDbEntity
 {
     private DbContext _context = context;
     private DbSet<TModel> _modelSet = modelSet;

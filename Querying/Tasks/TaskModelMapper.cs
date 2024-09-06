@@ -1,11 +1,11 @@
-using TaskPlanner.API.Database.Models;
+using TaskPlanner.API.Database.Entities;
 
 namespace TaskPlanner.API.Querying.Tasks;
 
-public class TaskModelMapper : ITypeMapper<TaskDbModel, TaskCreateRequest>
+public class TaskModelMapper : ITypeMapper<TaskEntity, TaskCreateRequest>
 {
-    public TaskDbModel Map(TaskCreateRequest input)
+    public TaskEntity Map(TaskCreateRequest input)
     {
-        return new TaskDbModel { TaskId = default, Name = input.Name, Priority = input.Priority };
+        return new TaskEntity { Id = default, Name = input.Name, Description = input.Description, Priority = input.Priority };
     }
 }

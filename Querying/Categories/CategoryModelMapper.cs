@@ -1,11 +1,11 @@
-using TaskPlanner.API.Database.Models;
+using TaskPlanner.API.Database.Entities;
 
 namespace TaskPlanner.API.Querying.Categories;
 
-public class CategoryModelMapper : ITypeMapper<CategoryDbModel, CategoryCreateRequest>
+public class CategoryModelMapper : ITypeMapper<CategoryEntity, CategoryCreateRequest>
 {
-    public CategoryDbModel Map(CategoryCreateRequest input)
+    public CategoryEntity Map(CategoryCreateRequest input)
     {
-        return new CategoryDbModel { CategoryId = default, Name = input.Name };
+        return new CategoryEntity { Id = default, Name = input.Name };
     }
 }
